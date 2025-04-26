@@ -1,4 +1,4 @@
-import { GetServerList } from "../aux/utils.js";
+import { GetServerList } from "./aux/utils.js";
 
 export async function main(ns) {
     await findContracts(ns);
