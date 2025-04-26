@@ -42,7 +42,8 @@ async function rootThis(ns, target) {
     }
     if(isElementPresent(questServers, target) && 
         !ns.getServer(target).backdoorInstalled && 
-        ns.getServer(target).requiredHackingSkill <= ns.getPlayer().skills.hacking) {
+        ns.getServer(target).requiredHackingSkill <= ns.getPlayer().skills.hacking &&
+        ns.hasRootAccess(target)){
 
             const path = findPathToServer(ns, target)
             for (const server of path) {
