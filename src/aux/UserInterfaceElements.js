@@ -114,7 +114,7 @@ export const createToggle = (value, onChange, label="") => {
       return `${ns.formatRam(ram)}`;
     });
     if (serverInfo.length < 25) {
-      serverInfo.push(...Array(25 - serverInfo.length).fill(`${ns.formatRam(0)}`));
+      serverInfo.push(...Array(25 - serverInfo.length).fill("NaN"));
     }
 
     return React.createElement("div", { 

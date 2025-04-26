@@ -67,6 +67,7 @@ import { common, createToggle, createDropdown,
           { value: "none", label: "STOP" },
           { value: "n00dles", label: "n00dles" },
           { value: "foodnstuff", label: "foodnstuff" },
+          { value: "catalyst", label: "catalyst" },
           { value: "4sigma", label: "4Sigma" }
   
         ],
@@ -113,14 +114,15 @@ import { common, createToggle, createDropdown,
       }
       //routines
       await routine(ns)
-      await ns.sleep(50);
+      await ns.asleep(50);
     }
   }
   
   async function routine(ns) {
     if(settings.autobuyServers) {await AutobuyServers(ns)}
     if(settings.hackexplore) {settings.serverList = await HackExplore(ns)}
-    if(settings.killallTrigger) {settings.killallTrigger = false; ns.exec("/aux/KillAll.js", "home")}
+    if(settings.killallTrigger) {settings.killallTrigger = false; KillAll(ns)}
+    //ns.exec("./ctt.js", "home")
     await saveSettings(ns)
   }
   
@@ -138,5 +140,16 @@ import { common, createToggle, createDropdown,
       await ns.write("settings.json", JSON.stringify(settings, null, 2), "w")
     }
   }
+
+  function KillAll(ns) {
+    const currentServer = "home"
+    let serverList = settings.serverList.filter(i => i !== currentServer);
+
+    for(let server of serverList) {
+        ns.killall(server);
+        //await ns.sleep(10);
+    }
+    ns.killall(currentServer);
+}
   
   
