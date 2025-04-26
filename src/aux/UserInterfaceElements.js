@@ -73,20 +73,29 @@ export const createToggle = (value, onChange, label="") => {
     return React.createElement("div", { style: tooltip.container },
       React.createElement("div", {
         style: tooltip.box,
-        onClick: () => {
+        onClick: (e) => {
+          e.stopPropagation();
           onToggle(!showTooltip);
           SSOT.setNeedsUpdate(true);
         }
       }, "SERVERS"),
       showTooltip && React.createElement("div", { 
         style: tooltip.overlay,
-        onClick: () => {
+        onClick: (e) => {
+          e.stopPropagation();
           onToggle(false);
           SSOT.setNeedsUpdate(true);
         }
       }),
       showTooltip && React.createElement("div", { 
-        style: tooltip.content,
+        style: {
+          ...tooltip.content,
+          position: "fixed",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+          zIndex: 1000
+        },
         onClick: (e) => {
           e.stopPropagation();
         }

@@ -1,4 +1,3 @@
-
 import { common, createToggle, createDropdown, 
     createCollapsible, createTooltip, createServerGrid, 
     createHorizontalLayout, createButton
@@ -42,7 +41,7 @@ import { common, createToggle, createDropdown,
   
       const boughtServersTooltipElement = createTooltip(
         showTooltip,
-        (value) => { showTooltip = value; },
+        (value) => { setShowTooltip(value); },
         createServerGrid(ns)
       );
   
