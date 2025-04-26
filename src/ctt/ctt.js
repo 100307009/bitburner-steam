@@ -117,8 +117,23 @@ function solve(type, data, server, contract, ns) {
     }
 }
 
-function findLargestPrimeFactor(data) {
-    return false;
+function findLargestPrimeFactor(n) {
+    let factors = new Array();
+	let d = 2
+	while (n > 1) {
+		while (n % d == 0) {
+			factors.push(d);
+			n /= d;
+		}
+		d = d + 1
+		if (d * d > n) {
+			if (n > 1) factors.push(n);
+			break
+		}
+	}
+
+	if (factors.length > 0) return factors.pop();
+	return '';
 }
 
 function subarrayWithMaximumSum(arrayData) {
@@ -179,20 +194,94 @@ function totalWaysToSumII(input) {
 	return table[n];
 }
 
-function spiralizeMatrix(data) {
-    return false;
+function spiralizeMatrix(arr, accum = []) {
+    const column = (arr, index) => {
+        const res = [];
+        for (let i = 0; i < arr.length; i++) {
+            const elm = arr[i].splice(index, 1)[0];
+            if (elm) {
+                res.push(elm);
+            }
+        }
+        return res;
+    }
+    
+    if (arr.length === 0 || arr[0].length === 0) {
+		return accum;
+	}
+	accum = accum.concat(arr.shift());
+	if (arr.length === 0 || arr[0].length === 0) {
+		return accum;
+	}
+	accum = accum.concat(column(arr, arr[0].length - 1));
+	if (arr.length === 0 || arr[0].length === 0) {
+		return accum;
+	}
+	accum = accum.concat(arr.pop().reverse());
+	if (arr.length === 0 || arr[0].length === 0) {
+		return accum;
+	}
+	accum = accum.concat(column(arr, 0).reverse());
+	if (arr.length === 0 || arr[0].length === 0) {
+		return accum;
+	}
+	return spiral(arr, accum);
 }
 
-function arrayJumpingGame(data) {
-    return false;
+function arrayJumpingGame(arrayData) {
+    if (arrayData[0] == 0) return '0';
+	let arrayJump = [1];
+
+	for (let n = 0; n < arrayData.length; n++) {
+		if (arrayJump[n]) {
+			for (let p = n; p <= Math.min(n + arrayData[n], arrayData.length - 1); p++) { // fixed off-by-one error
+				arrayJump[p] = 1;
+			}
+		}
+	}
+
+	return 0 + Boolean(arrayJump[arrayData.length - 1]); // thanks /u/Kalumniatoris
 }
 
-function arrayJumpingGameII(data) {
-    return false;
+function arrayJumpingGameII(arrayData) {
+    let n = arrayData.length;
+	let reach = 0;
+	let jumps = 0;
+	let lastJump = -1;
+	while (reach < n - 1) {
+		let jumpedFrom = -1;
+		for (let i = reach; i > lastJump; i--) {
+			if (i + arrayData[i] > reach) {
+				reach = i + arrayData[i];
+				jumpedFrom = i;
+			}
+		}
+		if (jumpedFrom === -1) {
+			jumps = 0;
+			break;
+		}
+		lastJump = jumpedFrom;
+		jumps++;
+	}
+	return jumps
 }
 
 function mergeOverlappingIntervals(data) {
-    return false;
+    data.sort(([minA], [minB]) => minA - minB);
+	for (let i = 0; i < data.length; i++) {
+		for (let j = i + 1; j < data.length; j++) {
+			const [min, max] = data[i];
+			const [laterMin, laterMax] = data[j];
+			if (laterMin <= max) {
+				const newMax = laterMax > max ? laterMax : max;
+				const newInterval = [min, newMax];
+				data[i] = newInterval;
+				data.splice(j, 1);
+				j = i;
+			}
+		}
+	}
+	return data;
 }
 
 function generateIPAddresses(num) {
@@ -499,7 +588,6 @@ function shortestPathInGrid(data) {
 	return path;
 }
 
-
 function sanitizeParentheses(data) {
     var left = 0
 	var right = 0
@@ -607,11 +695,83 @@ function findAllValidMathExpressions(arrayData) {
 }
 
 function hammingCodesIntegerToBinary(data) {
-    return false;
+    function HammingSumOfParity(_lengthOfDBits) { // will calculate the needed amount of parityBits 'without' the "overall"-Parity
+        return (_lengthOfDBits < 3 || _lengthOfDBits == 0)
+            ? ((_lengthOfDBits == 0) ? 0 : _lengthOfDBits + 1)
+            // the Math.log2-math will only work, if the length is greater egqual 3 otherwise it's "kinda broken" :D
+            : ((Math.ceil(Math.log2(_lengthOfDBits * 2))) <= Math.ceil(Math.log2(1 + _lengthOfDBits + Math.ceil(Math.log2(_lengthOfDBits)))))
+                ? Math.ceil(Math.log2(_lengthOfDBits) + 1)
+                : Math.ceil(Math.log2(_lengthOfDBits))
+    }
+
+    let _dataBits = value.toString(2); // change value into string of binary bits
+	let _sum_parity = HammingSumOfParity(_dataBits.length); // get the sum of needed parity bits
+	let _data = _dataBits.split(""); // create new array with the given data bits
+	let _build = []; // init new array for building
+	let count = (arr, val) => arr.reduce((a, v) => (v === val ? a + 1 : a), 0);
+	// count specified data in the array, for later use
+
+	_build.push("x", "x", ..._data.splice(0, 1)); // pre-build the "pre-build"
+
+	for (let i = 2; i < _sum_parity; i++) { // add new paritybits and the corresponding data bits
+		_build.push("x", ..._data.splice(0, Math.pow(2, i) - 1))
+	}
+	// "pre"-build my array, now the "calculation"... get the paritybits working
+	for (let index of _build.reduce(function (a, e, i) { if (e == "x") a.push(i); return a; }, [])) {
+		let _tempcount = index + 1; // set the "stepsize"
+		let _temparray = []; // temporary array to store the corresponding bits
+		let _tempdata = [..._build]; // copy the "build"
+		while (_tempdata[index] !== undefined) { // as long as there are bits, do "cut"
+			let _temp = _tempdata.splice(index, _tempcount * 2); // get x*2 bits, then
+			_temparray.push(..._temp.splice(0, _tempcount)); // .. cut them and keep first half
+		}
+		_temparray.splice(0, 1); // remove first bit, which is the parity one
+		_build[index] = ((count(_temparray, "1")) % 2.).toString() // simple count and remainder of 2 with "toString" to store it
+	}
+	_build.unshift(((count(_build, "1")) % 2.).toString()) // adding first index, which is done as last element
+	return _build.join("") // return a string again
 }
 
 function hammingCodesBinaryToInteger(data) {
-    return false;
+    let _build = _data.split(""); // ye, an array again
+	let _testArray = [];  //for the "tests". if any is false, it is been altered data, will check and fix it later
+	let _sum_parity = Math.ceil(Math.log2(_data.length)); // excluding first bit
+	let count = (arr, val) => arr.reduce((a, v) => (v === val ? a + 1 : a), 0); // count.... again ;)
+	let _overallParity = _build.splice(0, 1).join(""); // remove first index, for checking and to use the _build properly later
+	_testArray.push((_overallParity == (count(_build, "1") % 2).toString()) ? true : false); // checking the "overall" parity
+	for (var i = 0; i < _sum_parity; i++) {
+		let _tempIndex = Math.pow(2, i) - 1 // get the parityBits Index
+		let _tempStep = _tempIndex + 1 // set the stepsize
+		let _tempData = [..._build] // "copy" the build-data
+		let _tempArray = [] // init empty array for "testing"
+		while (_tempData[_tempIndex] != undefined) { // extract from the copied data until the "starting" index is undefined
+			var _temp = [..._tempData.splice(_tempIndex, _tempStep * 2)] // extract 2*stepsize
+			_tempArray.push(..._temp.splice(0, _tempStep))  // and cut again for keeping first half
+		}
+		let _tempParity = _tempArray.shift() // and cut the first index for checking with the rest of the data
+		_testArray.push(((_tempParity == (count(_tempArray, "1") % 2).toString())) ? true : false) // is the _tempParity the calculated data?
+	}
+	let _fixIndex = 0; // init the "fixing" index amd start with -1, bc we already removed the first bit
+	for (let i = 1; i < _sum_parity + 1; i++) {
+		_fixIndex += (_testArray[i]) ? 0 : (Math.pow(2, i) / 2)
+	}
+	_build.unshift(_overallParity)
+	// fix the actual hammingcode if there is an error
+	if (_fixIndex > 0 && _testArray[0] == false) {  // if the overall is false and the sum of calculated values is greater equal 0, fix the corresponding hamming-bit
+		_build[_fixIndex] = (_build[_fixIndex] == "0") ? "1" : "0"
+	}
+	else if (_testArray[0] == false) { // otherwise, if the the overall_parity is only wrong, fix that one
+		_overallParity = (_overallParity == "0") ? "1" : "0"
+	}
+	else if (_testArray[0] == true && _testArray.some((truth) => truth == false)) {
+		return 0 // uhm, there's some strange going on... 2 bits are altered? How?
+	}
+	// oof.. halfway through... we fixed the altered bit, now "extract" the parity from the build and parse the binary data
+	for (var i = _sum_parity; i >= 0; i--) { // start from the last parity down the starting one
+		_build.splice(Math.pow(2, i), 1)
+	}
+	_build.splice(0, 1)
+	return parseInt(_build.join(""), 2)
 }
 
 function proper2ColoringOfGraph(data) {
