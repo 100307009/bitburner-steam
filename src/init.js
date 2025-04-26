@@ -11,7 +11,7 @@ import { common, createToggle, createDropdown,
   /** @param {NS} ns */
   export async function main(ns) {
     ns.disableLog("ALL");
-    ns.tail();
+    ns.ui.openTail();
     
     let storedSettings = await ns.read("settings.json")
     if(storedSettings) {

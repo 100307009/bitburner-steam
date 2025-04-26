@@ -6,7 +6,7 @@ export async function Drain(ns) {
 
   for (let server of servers) {
     if (ns.hasRootAccess(server)) {
-      while (ns.getServerMoneyAvailable(server) > 100000) {
+      while (ns.getServerMoneyAvailable(server) > 10000) {
         await RunScript(ns, "../basic/hack.js", server, 1)
         await ns.sleep(20)
       }

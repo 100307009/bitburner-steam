@@ -24,7 +24,7 @@ const COSTS = { hack: 1.7, weaken1: 1.75, grow: 1.75, weaken2: 1.75 };
 /** @param {NS} ns */
 export async function main(ns) {
 	ns.disableLog("ALL");
-	ns.tail();
+	ns.ui.openTail();
 	let preferredTarget = getSelectedTarget() || ns.args[0];
 	await batcher(ns, preferredTarget);
 }
