@@ -65,7 +65,6 @@ import { common, createToggle, createDropdown,
         settings.batcherTarget,
         [
           { value: "none", label: "STOP" },
-          { value: "n00dles", label: "n00dles" },
           { value: "foodnstuff", label: "foodnstuff" },
           { value: "catalyst", label: "catalyst" },
           { value: "4sigma", label: "4Sigma" }
@@ -94,12 +93,21 @@ import { common, createToggle, createDropdown,
           justifyContent: "spaceBetween"
         }
       );
+
+      const fourthLine = createHorizontalLayout(
+        [],
+        { 
+          label: "Karma: " + ns.heart.break(),
+          justifyContent: "spaceBetween"
+        }
+      );
   
       ns.clearLog();
       return React.createElement("div", { style: common.container },
         firstLine,
         secondLine,
-        thirdLine
+        thirdLine,
+        fourthLine
       );
     };
   
