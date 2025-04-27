@@ -5,25 +5,23 @@ export async function main(ns) {
     //test(ns, "Find All Valid Math Expressions");
 }
 
-function test(ns, type){
-    ns.codingcontract.createDummyContract(type);
-    let contract = ns.ls("home", ".cct")[0];
-    let data = ns.codingcontract.getData(contract, "home");
+// function test(ns, type){
+//     ns.codingcontract.createDummyContract(type);
+//     let contract = ns.ls("home", ".cct")[0];
+//     let data = ns.codingcontract.getData(contract, "home");
 
-    const didSolve = solve(type, data, "home", contract, ns);
-    let result = ns.codingcontract.attempt(didSolve, contract, "home");
-    ns.tprint(result);
+//     const didSolve = solve(type, data, "home", contract, ns);
+//     let result = ns.codingcontract.attempt(didSolve, contract, "home");
+//     ns.tprint(result);
 
-    if (result.length > 0){
-        ns.tprint(`SUCCESS: ${type}, data: ${data}, result: ${didSolve}`);
-    }
-    else{
-        ns.tprint(`FAIL: ${type}`);
-        ns.rm(contract);
-    }
-
-
-}
+//     if (result.length > 0){
+//         ns.tprint(`SUCCESS: ${type}, data: ${data}, result: ${didSolve}`);
+//     }
+//     else{
+//         ns.tprint(`FAIL: ${type}`);
+//         ns.rm(contract);
+//     }
+// }
 
 async function findContracts(ns){
     const servers = GetServerList(ns);
@@ -541,7 +539,7 @@ function uniquePathsInGridII(grid, ignoreFirst = false, ignoreLast = false) {
 				}
 
 				let removedPaths = uniquePathsInGridII(newArray, true, ignoreLast);
-				removedPaths *= uniquePathsI([i + 1, j + 1]);
+				removedPaths *= uniquePathsInGridI([i + 1, j + 1]);
 
 				totalPossiblePaths -= removedPaths;
 			}
@@ -694,7 +692,7 @@ function findAllValidMathExpressions(arrayData) {
 	return JSON.stringify(validExpressions);
 }
 
-function hammingCodesIntegerToBinary(data) {
+function hammingCodesIntegerToBinary(value) {
     function HammingSumOfParity(_lengthOfDBits) { // will calculate the needed amount of parityBits 'without' the "overall"-Parity
         return (_lengthOfDBits < 3 || _lengthOfDBits == 0)
             ? ((_lengthOfDBits == 0) ? 0 : _lengthOfDBits + 1)
@@ -733,9 +731,9 @@ function hammingCodesIntegerToBinary(data) {
 }
 
 function hammingCodesBinaryToInteger(data) {
-    let _build = _data.split(""); // ye, an array again
+    let _build = data.split(""); // ye, an array again
 	let _testArray = [];  //for the "tests". if any is false, it is been altered data, will check and fix it later
-	let _sum_parity = Math.ceil(Math.log2(_data.length)); // excluding first bit
+	let _sum_parity = Math.ceil(Math.log2(data.length)); // excluding first bit
 	let count = (arr, val) => arr.reduce((a, v) => (v === val ? a + 1 : a), 0); // count.... again ;)
 	let _overallParity = _build.splice(0, 1).join(""); // remove first index, for checking and to use the _build properly later
 	_testArray.push((_overallParity == (count(_build, "1") % 2).toString()) ? true : false); // checking the "overall" parity
@@ -1019,5 +1017,25 @@ function vigenereCipher(data) {
 }
 
 function squareRoot(data) {
-    return false;
+    function sqrt(value) {
+		if (value < 0n) {
+			throw 'square root of negative numbers is not supported'
+		}
+	
+		if (value < 2n) {
+			return value;
+		}
+	
+		function newtonIteration(n, x0) {
+			const x1 = ((n / x0) + x0) >> 1n;
+			if (x0 === x1 || x0 === (x1 - 1n)) {
+				return x0;
+			}
+			return newtonIteration(n, x1);
+		}
+	
+		return newtonIteration(value, 1n);
+	}
+	
+	return sqrt(BigInt(data));
 }
