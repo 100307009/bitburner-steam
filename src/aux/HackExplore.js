@@ -15,8 +15,9 @@ async function rootThis(ns, target) {
 
     const questServers = new Set(["CSEC", "I.I.I.I", "avmnite-02h", "run4theh111z", "The-Cave", 
         //corporate zone
-        "fulcrumassets", "ecorp", "megacorp", "kuai-gong", "4sigma", "nwo", "blade", "omnitek", 
-        "bachman", "clarke", 
+        //"fulcrumassets", 
+        //"ecorp", "megacorp", "kuai-gong", "4sigma", "nwo", "blade", "omnitek", 
+        //"bachman", "clarke", 
         //farm zone
         "foodnstuff", "n00dles"])
 
@@ -40,18 +41,18 @@ async function rootThis(ns, target) {
         ns.nuke(target)
             
     }
-    if(isElementPresent(questServers, target) && 
-        !ns.getServer(target).backdoorInstalled && 
-        ns.getServer(target).requiredHackingSkill <= ns.getPlayer().skills.hacking &&
-        ns.hasRootAccess(target)){
+    // if(isElementPresent(questServers, target) && 
+    //     !ns.getServer(target).backdoorInstalled && 
+    //     ns.getServer(target).requiredHackingSkill <= ns.getPlayer().skills.hacking &&
+    //     ns.hasRootAccess(target)){
 
-            const path = findPathToServer(ns, target)
-            for (const server of path) {
-                ns.singularity.connect(server);
-            }
-            await ns.singularity.installBackdoor(target)
-            await ns.singularity.connect("home")
-    }
+    //         const path = findPathToServer(ns, target)
+    //         for (const server of path) {
+    //             ns.singularity.connect(server);
+    //         }
+    //         await ns.singularity.installBackdoor(target)
+    //         await ns.singularity.connect("home")
+    // }
 }
 
 export function sumHackingTools(ns) {
