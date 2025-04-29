@@ -1,21 +1,30 @@
 import { RunScript } from "./RunScript.js"
 
-
 export async function Drain(ns) {
+  ns.ui.openTail()
   const servers = new Set(["n00dles", "sigma-cosmetics", "joesguns", "nectar-net", "hong-fang-tea", "harakiri-sushi"])
+  const MONEY_THRESHOLD = 10000
+  const SLEEP_TIME = 10
 
-  while (servers.size > 0) {
-    if (ns.hasRootAccess(server[0])) {
-      while (ns.getServerMoneyAvailable(server[0]) > 10000) {
-        await RunScript(ns, "../basic/hack.js", server[0], 4)
-        await ns.sleep(20)
+  for (const server of servers) {
+    if (!ns.hasRootAccess(server)) {
+      if (ns.getServerRequiredHackingLevel(server) <= ns.getHackingLevel()) {
+        ns.nuke(server)
+        if (!ns.hasRootAccess(server)) {
+          ns.toast(`Failed to nuke ${server}`, "error")
+          continue
+        }
+      } else {
+        ns.toast(`Cannot nuke ${server} - hacking level too low`, "warning")
+        continue
       }
-      servers.delete(server[0])
-      ns.toast(`Drained ${server[0]}`)
     }
-    else {
-      ns.nuke(target)
+
+    while (ns.getServerMoneyAvailable(server) > MONEY_THRESHOLD) {
+      await RunScript(ns, "../basic/hack.js", server, 4)
+      await ns.sleep(SLEEP_TIME)
     }
+    ns.toast(`Drained ${server}`)
   }
 }
 
