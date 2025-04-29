@@ -37,9 +37,9 @@ async function findContracts(ns){
 			const data = ns.codingcontract.getData(contract, server);
             ns.tprint(type, data);
 			const didSolve = solve(type, data, server, contract, ns);
-
+			ns.tprint(`INFO: ` + didSolve);
 			if (didSolve !== false){
-				ns.tprint(`INFO: ` + didSolve);
+				
                 ns.tprint(ns.codingcontract.attempt(didSolve, contract, server));
             }
 			else
@@ -187,7 +187,6 @@ function totalWaysToSumII(input) {
 		for (let j = i; j <= n; j++) {
 			table[j] += table[j - i];
 		}
-		console.log(table);
 	}
 	return table[n];
 }
@@ -223,7 +222,7 @@ function spiralizeMatrix(arr, accum = []) {
 	if (arr.length === 0 || arr[0].length === 0) {
 		return accum;
 	}
-	return spiral(arr, accum);
+	return spiralizeMatrix(arr, accum);
 }
 
 function arrayJumpingGame(arrayData) {
@@ -1009,7 +1008,28 @@ function lzCompression(plain) {
 }
 
 function caesarCipher(data) {
-    return false;
+    const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split('');
+    let text = data[0].toUpperCase();
+    let offset = data[1];
+    let newstring = "";
+    
+    for(let i = 0; i < text.length; i++) {
+        if(text[i] === " ") {
+            newstring += " ";
+        } else {
+            let index = letters.indexOf(text[i]);
+            if(index !== -1) {
+                // Handle negative offsets by adding 26 before modulo
+                // Now positive offset shifts left, negative shifts right
+                let newIndex = (index - offset + 26) % 26;
+                newstring += letters[newIndex];
+            } else {
+                newstring += text[i]; // Keep non-alphabetic characters unchanged
+            }
+        }
+    }
+    
+    return newstring;
 }
 
 function vigenereCipher(data) {
